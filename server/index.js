@@ -2,7 +2,10 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const PORT =3000;
-const ViteExpress = require("vite-express")
+const ViteExpress = require("vite-express");
+
+// uncomment when ready to deploy
+// ViteExpress.config({ mode: "production" })
 
 const cors = require('cors');
 app.use(cors());
