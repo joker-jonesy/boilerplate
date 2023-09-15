@@ -4,9 +4,9 @@ import App from "./app";
 import {Provider} from "react-redux";
 import {BrowserRouter} from "react-router-dom";
 import store from "./store";
-import "./app.css";
+import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.body).render(
     <React.StrictMode>
         <BrowserRouter>
             <Provider store={store}>
