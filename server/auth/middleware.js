@@ -1,30 +1,21 @@
 const jwt = require("jsonwebtoken");
+const process = require("process");
 const protection = async (req, res, next) => {
-    let token;
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith("Bearer")
-    ) {
-        try {
-            // get token from header
-            token = req.headers.authorization.split(" ")[1];
+    console.log("auth middleware invoked")
+    const token = req.headers.authorization
 
-            // verify token
-            const decoded = jwt.verify(
-                token,
-                process.env.JWT_SECRET
-            );
-
-            req.user = decoded;
-            next();
-        } catch (error) {
-            console.error(error.message);
-            res.status(401).json({ message: "Not authorized" });
-        }
+    console.log("extracted token:", token)
+    if (!token) {
+        return res.status(401).send("No token provided.");
     }
 
-    if (!token) {
-        res.status(401).json({ message: "Not authorized" });
+    try {
+        req.user = jwt.verify(token, process.env.JWT);
+        console.log("middleware req.user", req.user)
+        next();
+    } catch (error) {
+        console.log("Token verification error:", error.message);
+        return res.status(403).send("Failed to authenticate token.")
     }
 };
 
