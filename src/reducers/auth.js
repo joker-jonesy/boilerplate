@@ -6,9 +6,6 @@ const CREDENTIALS = "credentials";
 
 const authApi = storeApi.injectEndpoints({
     endpoints: (builder)=>({
-        me: builder.query({
-            query:()=> "auth/me"
-        }),
         login: builder.mutation({
             query: (cred)=>({
                 url:"auth/login",
@@ -68,7 +65,6 @@ const authSlice = createSlice({
 export default  authSlice.reducer;
 
 export const {
-    useMeQuery,
     useLoginMutation,
     useRegisterMutation,
     useLogoutMutation

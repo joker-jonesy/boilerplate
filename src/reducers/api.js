@@ -23,7 +23,68 @@ export const api = createApi({
         },
     }),
     endpoints: (builder) => ({
-
+        getPosts: builder.query({
+            query: ()=> 'api/posts'
+        }),
+        getUserPosts: builder.query({
+            query:()=>'api/posts/user/'
+        }),
+        deletePost:builder.mutation({
+            query:(id)=>({
+                url:'api/posts/'+id,
+                method:'DELETE'
+            })
+        }),
+        addPost: builder.mutation({
+            query:(body)=>({
+                url:'api/posts',
+                method:"POST",
+                body:body
+            })
+        }),
+        editPost: builder.mutation({
+            query(data){
+                const {id, ...body}=data;
+                return {
+                    url: 'api/posts/'+id,
+                    method:"PUT",
+                    body
+                }
+            }
+        }),
 
     }),
+});
+
+const dataSlice = createSlice({
+    name:"data",
+    initialState:{
+        posts:[]
+    },
+    reducers:{},
+    extraReducers: (builder)=>{
+        builder.addMatcher(api.endpoints.getPosts.matchFulfilled, (state, {payload})=>{
+            return{
+                ...state,
+                posts: payload
+            }
+        })
+
+        builder.addMatcher(api.endpoints.deletePost.matchFulfilled, (state, {payload})=>{
+            return {
+                ...state,
+                posts: state.posts.filter(i=>i.id!==payload.id)
+            }
+
+        })
+
+        builder.addMatcher(api.endpoints.addPost.matchFulfilled, (state, {payload})=>{
+            state.posts.push(payload);
+            return state;
+        })
+    }
 })
+
+export default dataSlice.reducer;
+
+export const {useGetUserPostsQuery, useAddPostMutation, useDeletePostMutation, useGetPostsQuery, useUpdatePostMutation} = api;
